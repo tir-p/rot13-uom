@@ -1,0 +1,113 @@
+     Assembly listing for: rot13.mas
+                Assembled: Sun Apr 14 17:57:55 MUT 2024
+
+         |                 ORG 100                  / Start the program at location 100 hexadecimal
+100 A000 |                 CLEAR                     
+101 112B |                 LOAD Start               / Initialize character pointer to start of block
+102 212E |                 STORE Ptr                 
+         |                                          
+103 112B |                 LOAD Start               / Initialize character pointer to start of block
+104 212F |                 STORE Ptr2                
+         |                                          
+105 5000 |  ILoop          INPUT                    / Input a character
+106 212C |                 STORE InVal              / Store input character in InVal
+         |                                          
+107 4128 |                 SUBT ChPe                / Compare input with the '.'
+108 8800 |                 SKIPCOND 800             / If '.' is input, skip next instruction
+109 9110 |                 JUMP OLoop               / If character is '.', exit to the OLoop
+10A 911B |                 JUMP ROT13               / Call the ROT13 subroutine to transform character
+         |                                          
+         |                                          
+10B E12E |  StoreCharacter STOREI Ptr               / Store transformed character
+10C 112E |                 LOAD Ptr                 / Load the pointer to AC
+10D 312A |                 ADD One                  / Increment the pointer
+10E 212E |                 STORE Ptr                / Store incremented value of pointer
+10F 9105 |                 JUMP ILoop               / Start input loop (ILoop) over
+         |                                          
+110 D12F |  OLoop          LOADI Ptr2               / Load Character from memory
+111 4128 |                 SUBT ChPe                / To compare with '.'
+112 8800 |                 SKIPCOND 800             / If character = '.', skip next instruction
+113 911A |                 JUMP EndOLoop            / If it is a '.', jump out of Oloop to ODone
+114 3128 |                 ADD ChPe                  
+115 6000 |                 OUTPUT                   / Output the character
+116 112F |                 LOAD Ptr2                / Load the pointer into AC
+117 312A |                 ADD One                  / Increment pointer
+118 212F |                 STORE Ptr2               / Store the incremented value of pointer
+119 9110 |                 JUMP OLoop               / Go back to OLoop for the next character
+         |                                          
+11A 7000 |  EndOLoop       HALT                      
+         |                                          
+         |                                          / -----
+         |                                          
+         |                                          / Rotate-13 subroutine: Apply ROT13 to input character in location InVal and return in AC
+         |                                          
+         |                                          / -----
+         |                                          
+11B 112C |  ROT13          LOAD InVal               / Get character
+11C 3129 |                 ADD Val13                / Add 13
+11D 212D |                 STORE Hold               / Save it
+         |                                          
+11E 4127 |                 SUBT ChZ                 / Check if modulo adjust is needed (past 'Z')
+11F 8800 |                 SKIPCOND 800             / No adjust needed if past 'Z'
+120 9124 |                 JUMP NoAdj                
+121 3126 |                 ADD ChA                   
+122 412A |                 SUBT One                  
+123 212D |                 STORE Hold                
+         |                                          
+124 112D |  NoAdj          LOAD Hold                / No adjust needed, get result
+125 910B |                 JUMP StoreCharacter       
+         |                                          
+         |                                                 
+         |                                                 
+         |                                          
+         |                                          
+         |                                          
+         |                                          / -----
+         |                                          
+         |                                          / Constants (the program should not write to these locations)
+         |                                          
+         |                                          / -----
+         |                                          
+126 0041 |  ChA            DEC 65                   / Constant value 'A' for modulo adjust in subroutine
+127 005A |  ChZ            DEC 90                   / Constant value 'Z' for modulo check in subroutine
+128 002E |  ChPe           DEC 46                   / Constant period character that marks the end of input
+129 000D |  Val13          DEC 13                   / Constant rotate value of 13 for subroutine
+12A 0001 |  One            HEX 1                    / Constant value 1
+12B 0200 |  Start          HEX 200                  / Constant address for start of character block
+         |                                          
+         |                                          / -----
+         |                                          
+         |                                          / Data area (these locations are for reading and writing)
+         |                                          
+         |                                          / -----
+         |                                          
+12C 0000 |  InVal          HEX 0                    / Reserved for subroutine input value
+12D 0000 |  Hold           HEX 0                    / Reserved for temporary variable for subroutine
+12E 0000 |  Ptr            HEX 0                    / Reserved for character pointer
+12F 0200 |  Ptr2           HEX 200                   
+
+Assembly successful.
+
+         SYMBOL TABLE
+         ----------------------------------------------------------
+          Symbol         | Defined | References 
+         ----------------+---------+-------------------------------
+          ChA            |   126   | 121
+          ChPe           |   128   | 107, 111, 114
+          ChZ            |   127   | 11E
+          EndOLoop       |   11A   | 113
+          Hold           |   12D   | 11D, 123, 124
+          ILoop          |   105   | 10F
+          InVal          |   12C   | 106, 11B
+          NoAdj          |   124   | 120
+          OLoop          |   110   | 109, 119
+          One            |   12A   | 10D, 117, 122
+          Ptr            |   12E   | 102, 10B, 10C, 10E
+          Ptr2           |   12F   | 104, 110, 116, 118
+          ROT13          |   11B   | 10A
+          Start          |   12B   | 101, 103
+          StoreCharacter |   10B   | 125
+          Val13          |   129   | 11C
+         ----------------------------------------------------------
+
+

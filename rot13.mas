@@ -1,0 +1,84 @@
+ORG 100              / Start the program at location 100 hexadecimal
+CLEAR
+Load Start           / Initialize character pointer to start of block
+Store Ptr
+
+Load Start           / Initialize character pointer to start of block
+Store Ptr2
+
+ILoop, Input         / Input a character
+Store InVal         / Store input character in InVal
+
+Subt ChPe           / Compare input with the '.'
+Skipcond 800        / If '.' is input, skip next instruction
+Jump OLoop          / If character is '.', exit to the OLoop
+Jump ROT13            / Call the ROT13 subroutine to transform character
+
+
+StoreCharacter, StoreI Ptr          / Store transformed character
+Load Ptr             / Load the pointer to AC
+Add One               / Increment the pointer
+Store Ptr             / Store incremented value of pointer
+Jump ILoop           / Start input loop (ILoop) over
+
+OLoop, LoadI Ptr2     / Load Character from memory
+Subt ChPe             / To compare with '.'
+Skipcond 800        / If character = '.', skip next instruction
+Jump EndOLoop       / If it is a '.', jump out of Oloop to ODone
+Add ChPe
+Output               / Output the character
+Load Ptr2            / Load the pointer into AC
+Add One              / Increment pointer
+Store Ptr2            / Store the incremented value of pointer
+Jump OLoop          / Go back to OLoop for the next character
+
+EndOLoop, Halt
+
+/ -----
+
+/ Rotate-13 subroutine: Apply ROT13 to input character in location InVal and return in AC
+
+/ -----
+
+ROT13, Load InVal          / Get character
+Add Val13           / Add 13
+Store Hold          / Save it
+
+Subt ChZ            / Check if modulo adjust is needed (past 'Z')
+Skipcond 800       / No adjust needed if past 'Z'
+Jump NoAdj
+Add ChA
+Subt One
+Store Hold
+
+NoAdj, Load Hold    / No adjust needed, get result
+Jump StoreCharacter
+
+       
+       
+
+
+
+/ -----
+
+/ Constants (the program should not write to these locations)
+
+/ -----
+
+ChA, Dec 65       / Constant value 'A' for modulo adjust in subroutine
+ChZ, Dec 90       / Constant value 'Z' for modulo check in subroutine
+ChPe, Dec 46         / Constant period character that marks the end of input
+Val13, DEC 13        / Constant rotate value of 13 for subroutine
+One, HEX 1           / Constant value 1
+Start, HEX 200       / Constant address for start of character block
+
+/ -----
+
+/ Data area (these locations are for reading and writing)
+
+/ -----
+
+InVal, HEX 0         / Reserved for subroutine input value
+Hold, HEX 0          / Reserved for temporary variable for subroutine
+Ptr, HEX 0           / Reserved for character pointer
+Ptr2, Hex 200

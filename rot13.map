@@ -1,0 +1,20 @@
+ -------------------------
+ Symbol         | Location
+ ---------------+---------
+ ChA            |   126
+ ChPe           |   128
+ ChZ            |   127
+ EndOLoop       |   11A
+ Hold           |   12D
+ ILoop          |   105
+ InVal          |   12C
+ NoAdj          |   124
+ OLoop          |   110
+ One            |   12A
+ Ptr            |   12E
+ Ptr2           |   12F
+ ROT13          |   11B
+ Start          |   12B
+ StoreCharacter |   10B
+ Val13          |   129
+
